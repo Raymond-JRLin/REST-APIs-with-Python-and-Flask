@@ -1,7 +1,7 @@
 # the server, the Flask application has to be created to understand requests from browsers
 
 # tell Python we want to use flask
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 
 app = Flask(__name__) # create a Flask object with unique name
 
@@ -33,12 +33,24 @@ stores = [
 # POST /store data: {name: }
 @app.route('/store', methods = ['POST']) # default rout is a GET
 def create_store():
-	pass
+	request_data = request.get_json()
+	new_store = {
+		'name': request_data['name'],
+		'item': []
+	}
+	stores.append(new_store)
+	return jsonify(new_store)
 
-# GET /store/<string: name>
+# GET /store/<string:name>
 @app.route('/store/<string:name>') # 'http://127.0.0.1:5000/store/some_name'
 def get_store(name):
-	pass
+	# iterate over stores:
+	for store in stores:
+		# if the store name matches, return it
+		if store['name'] == name:
+			return jsonify(store)
+    # if none match, return an error message
+	return jsonify({'message': 'store not found'})
 
 # GET /store
 @app.route('/store')
@@ -47,16 +59,27 @@ def get_stores():
     # 'http://127.0.0.1:5000/store' can see the definiton of list, but JSON only use double quotes
 	return jsonify({'stores': stores}) # convert stores variable to JSON
 
-# POST /store/<string: name>/item {name: , price }
+# POST /store/<string:name>/item {name:, price}
 @app.route('/store/<string:name>/item', methods = ['POST'])
 def create_item_in_store(name):
-	pass
+	request_data = request.get_json()
+	for store in stores:
+		if store['name'] == name:
+			new_item = {
+			'name': request_data['name'],
+			'price': request_data['price']
+			}
+			store['item'].append(new_item)
+			return jsonify(new_item)
+	return jsonify({'message': 'store not found'})
 
 
-# GET /store/<string: name>/item
+# GET /store/<string:name>/item
 @app.route('/store/<string:name>/item')
 def get_item_in_store(name):
-	pass
-
+	for store in stores:
+		if store['name'] == name:
+			return jsonify({'item': store['item']})
+	return jsonify({'message': 'store not found'})
 
 app.run(port = 5000)
