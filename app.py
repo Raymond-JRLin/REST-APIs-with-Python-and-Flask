@@ -1,17 +1,17 @@
 # the server, the Flask application has to be created to understand requests from browsers
 
 # tell Python we want to use flask
-from flask import Flask
+from flask import Flask, jsonify
 
 app = Flask(__name__) # create a Flask object with unique name
 
 # create a list
 stores = [
 	{
-		'name': 'My Wonderful Store'
-		'item': [
+		'name': 'My Wonderful Store',
+		'items': [
 			{
-				'name': 'My Item'
+				'name': 'My Item',
 				'price': 15.99
 			}
 		]
@@ -36,23 +36,25 @@ def create_store():
 	pass
 
 # GET /store/<string: name>
-@app.route('/store/<string: name>') # http://127.0.0.1:5000/store/some_name
+@app.route('/store/<string:name>') # 'http://127.0.0.1:5000/store/some_name'
 def get_store(name):
 	pass
 
 # GET /store
 @app.route('/store')
 def get_stores():
-	pass
+    # JSON is a dictionary, but stores is a list
+    # 'http://127.0.0.1:5000/store' can see the definiton of list, but JSON only use double quotes
+	return jsonify({'stores': stores}) # convert stores variable to JSON
 
 # POST /store/<string: name>/item {name: , price }
-@app.route('/store/<string: name>/item', methods = ['POST'])
-def create_item(name):
+@app.route('/store/<string:name>/item', methods = ['POST'])
+def create_item_in_store(name):
 	pass
 
 
 # GET /store/<string: name>/item
-@app.route('/store/<string: name>/item')
+@app.route('/store/<string:name>/item')
 def get_item_in_store(name):
 	pass
 
