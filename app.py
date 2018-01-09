@@ -74,7 +74,7 @@ def create_item_in_store(name):
 			'name': request_data['name'],
 			'price': request_data['price']
 			}
-			store['item'].append(new_item)
+			store['items'].append(new_item)
 			return jsonify(new_item)
 	return jsonify({'message': 'store not found'})
 
@@ -84,7 +84,7 @@ def create_item_in_store(name):
 def get_item_in_store(name):
 	for store in stores:
 		if store['name'] == name:
-			return jsonify({'item': store['item']})
+			return jsonify({'items': store['items']})
 	return jsonify({'message': 'store not found'})
 
 app.run(port = 5000)
