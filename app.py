@@ -1,7 +1,7 @@
 # the server, the Flask application has to be created to understand requests from browsers
 
 # tell Python we want to use flask
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, render_template
 
 app = Flask(__name__) # create a Flask object with unique name
 
@@ -17,6 +17,11 @@ stores = [
 		]
 	}
 ]
+
+@app.route('/')
+def home():
+	return render_template('index.html')
+    # flask automatically looks 'templates' folder
 
 ###
 # # create a route for homepage
