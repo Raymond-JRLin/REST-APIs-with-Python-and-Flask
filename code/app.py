@@ -9,13 +9,25 @@ items = []
 
 class Item(Resource):
     def get(self, name):
-        for item in items:
-            if item['name'] == name:
-                return item # we don't need jsonify because restful does that for us
-        return {'item': None}, 404 # return a JSON
+        ###
+        # for item in items:
+        #     if item['name'] == name:
+        #         return item # we don't need jsonify because restful does that for us
+        ###
+        # improvement: use Lambda funtion
+        item = next(filter(lambda x : x['name'] == name, items), None) # lambda returns not a item or list but lambda object, so we can return a list of items whose names match the searching name, e.g.: list(filter(lambda x : x['name'] == name, items)). But we know there's exact only one item having the given name, so we use next to return the first item found by this filter funtion. Similarly, we can use one more next to get 2nd mathced item and then 3rd and so on. But it may raise a problem if there's no such matched item left, then next would break our program. So we set a default value as None, which means if there's no matched item, then return none
+        # return {'item': None}, 404 # return a JSON
         # 200 is the most popular http status code, but 404 NOT FOUND is the correct one for not found
+        # return {'item': None}, 200 if item is not None else 404
+        # shorten:
+        return {'item': None}, 200 if item else 404
 
     def post(self, name):
+        # improvement: to make sure there's only unique names for items
+        if next(filter(lambda x : x['name'] == name, items), None) is not None:
+            # there's an item having the name
+            return {'message': 'An item with name '{}' already exists.'.format(name)}, 400 # 400 is bad request, because it's not our fault but client's since they should have verified it's not an existing name, but we can tell them it's an invalid input because it's already in this app
+
         # pass JSON payload, but there would be some problem if it's not a JSON or there's no header or body. There's 2 ways to handle:
         # method 1:
         # data = request.get_json(force = True) # you don't need the content-type header just look the content and format it even if the content-type is not set to be application/JSON
