@@ -21,7 +21,6 @@ class Item(Resource):
         required = True, #ensure no request can come throught with no price
         help = "This field cannot be left blank!"
     )
-    data = parser.parse_args()
 
     @jwt_required()
     # we have to authenticate before we can call the get method
