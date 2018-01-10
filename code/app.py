@@ -14,6 +14,15 @@ jwt = JWT(app, authenticate, identity) # JWT creates a new endpoint of /auth, in
 items = []
 
 class Item(Resource):
+
+    parser = reqparse.RequestParser()
+    parser.add_argument('price',
+        type = float,
+        required = True, #ensure no request can come throught with no price
+        help = "This field cannot be left blank!"
+    )
+    data = parser.parse_args()
+
     @jwt_required()
     # we have to authenticate before we can call the get method
     def get(self, name):
@@ -42,7 +51,10 @@ class Item(Resource):
         # but it's dangerouse since if you don't use that it will look into header and get an error, if you use that, it will not look in header and get even incorrect content
         # method 2:
         # data = request.get_json(silent = True) # it doesn't give an error, it just basically returns none
-        data = request.get_json()
+
+        # we do this after filter to make sure there's no error when we go following. At the same time, it doesn't make sense that we load data if the item already exists and we would never use the data
+        data = Item.parser.parse_args()
+
         item = {'name': name, 'price': data['price']}
         items.append(item) # add it into items list
         return item, 201 # tell client it succeeds
@@ -59,16 +71,20 @@ class Item(Resource):
         return {'message': 'Item deleted'}
 
     def put(self, name):
+        ### we do this for whole Item class
         # data = request.get_json()
         # sometimes there's name and price in JSON payload, but we just wanna use price only
-        parser = reqparse.RequestParser()
-        parser.add_argument('price',
-            type = float,
-            required = True, #ensure no request can come throught with no price
-            help = "This field cannot be left blank!"
-        )
-        data = parser.parse_args() # just get what we want and get rid of others
-        
+        # parser = reqparse.RequestParser()
+        # parser.add_argument('price',
+        #     type = float,
+        #     required = True, #ensure no request can come throught with no price
+        #     help = "This field cannot be left blank!"
+        # )
+        data = Item.parser.parse_args() # just get what we want and get rid of others
+        # test parse
+        # print(data['another'])
+        ###
+
         item = next(filter(lambda x : x['name'] == name, items), None)
         if item is None:
             # create a new item
