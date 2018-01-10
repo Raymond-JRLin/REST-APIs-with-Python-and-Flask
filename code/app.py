@@ -52,6 +52,12 @@ class Item(Resource):
 
         # so it's important to use correct status code for client to check whether things went wrong or not
 
+    def delete(self, name):
+        # Python thinks it's a local variable if not declare it's the global/outer items we defined above, then the assignment would not be valid
+        global items
+        items = list(filter(lambda x : x['name'] != name, items))
+        return {'message': 'Item deleted'}
+
 class ItemList(Resource):
     def get(self):
         return {'items': items}
