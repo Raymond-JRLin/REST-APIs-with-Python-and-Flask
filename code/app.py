@@ -1,5 +1,5 @@
 from flask import Flask, request
-from flask_restful import Resource, Api
+from flask_restful import Resource, Api, reqparse
 # resource is a thing can be created and changed by API
 from flask_jwt import JWT, jwt_required
 
@@ -59,7 +59,16 @@ class Item(Resource):
         return {'message': 'Item deleted'}
 
     def put(self, name):
-        data = request.get_json()
+        # data = request.get_json()
+        # sometimes there's name and price in JSON payload, but we just wanna use price only
+        parser = reqparse.RequestParser()
+        parser.add_argument('price',
+            type = float,
+            required = True, #ensure no request can come throught with no price
+            help = "This field cannot be left blank!"
+        )
+        data = parser.parse_args() # just get what we want and get rid of others
+        
         item = next(filter(lambda x : x['name'] == name, items), None)
         if item is None:
             # create a new item
