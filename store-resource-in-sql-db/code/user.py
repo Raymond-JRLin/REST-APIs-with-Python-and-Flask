@@ -62,7 +62,7 @@ class UserRegister(Resource):
         data = UserRegister.parser.parse_args()
 
         connection = sqlite3.connect('data.db')
-        cursor = connect.cursor()
+        cursor = connection.cursor()
 
         query = "INSERT INTO users VALUES (NULL, ?, ?)" # because we use system's id with automatic incremental, keep id as NULL
         cursor.execute(query, (data['username'], data['password']))
