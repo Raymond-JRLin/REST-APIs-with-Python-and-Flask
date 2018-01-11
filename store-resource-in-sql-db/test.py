@@ -11,6 +11,14 @@ user = (1, 'Raymond', 'ray') # Python tuple
 insert_query = "INSERT INTO users VALUES (?, ? , ?)" # insert query: <table_name> (<id>, <user_name>, <password>)
 cursor.execute(insert_query, user) # it can replace question marks smartly
 
+# use list of tuples to create bunch of users info
+users = [
+    (2, 'jose', 'asdf'),
+    (1, 'rolf', 'xyz')
+]
+cursor.executemany(insert_query, users)
+
+
 connection.commit()
 
-connection.close()
+connection.close() # close the connection to stop receiving command
