@@ -4,8 +4,8 @@ from flask_restful import Api
 from flask_jwt import JWT
 
 from security import authenticate, identity
-from user import UserRegister
-from item import Item, ItemList
+from resource.user import UserRegister
+from resource.item import Item, ItemList
 
 app = Flask(__name__)
 app.secret_key = 'Raymond' # use a secret key and JWT, which stands for JSON Web Token, to encrypt message -> add security.py
