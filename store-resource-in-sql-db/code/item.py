@@ -66,8 +66,8 @@ class Item(Resource):
         # it may have problem to insert an item, so we use try to catch exception if it raised
         try:
             self.insert(item)
-        except Exception as e:
-            return {'message': "An error ocurred inserting the item."}, 500 # 500: Internal Server Error, something went wrong but we can't tell you exactly what - something didn't go wrong with the request but the server messed up
+        except:
+            return {'message': "An error occurred inserting the item."}, 500 # 500: Internal Server Error, something went wrong but we can't tell you exactly what - something didn't go wrong with the request but the server messed up
 
         return item, 201
 
@@ -100,17 +100,40 @@ class Item(Resource):
         return {'message': 'Item deleted'}
 
     def put(self, name):
-
         data = Item.parser.parse_args()
 
-        item = next(filter(lambda x : x['name'] == name, items), None)
+        ### retrieve from database
+        # item = next(filter(lambda x : x['name'] == name, items), None)
+        ###
+        item = self.find_by_name(name)
+        updated_item = {'name': name, 'price': data['price']}
+
         if item is None:
             # create a new item
-            item = {'name': name, 'price': data['price']}
-            item.append(item)
+            # item = {'name': name, 'price': data['price']}
+            # item.append(item)
+            try:
+                self.insert(updated_item)
+            except Exception as e:
+                return {"message": "An error occurred inserting the item."}, 500
         else:
-            item.update(data)
-        return item
+            try:
+                self.update(updated_item)
+            except Exception as e:
+                return {"message": "An error occurred updating the item."}, 500
+
+        return updated_item # return the new one
+
+    @classmethod
+    def insert(cls, item):
+        connection = sqlite3.connect('data.db')
+        cursor = connection.cursor()
+
+        query = "UPDATE items SET price = ? WHERE name = ?"
+        cursor.execute(query, (item['price'], item['name'])) # match the values in-order
+
+        connection.commit()
+        connection.close()
 
 class ItemList(Resource):
     def get(self):
