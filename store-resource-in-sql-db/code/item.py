@@ -2,6 +2,9 @@ from flask_restful import Resource, reqparse
 from flask_jwt import jwt_required
 import sqlite3
 
+
+# many REST APIs just like CRUD APIs: create, read, update, delete
+
 class Item(Resource):
 
     parser = reqparse.RequestParser()
@@ -47,6 +50,7 @@ class Item(Resource):
         #     return {'message': "An item with name '{}' already exists.".format(name)}, 400
         ###
 
+        # make sure the item is not already in database first
         if self.find_by_name(name):
             return {'message': "An item with name '{}' already exists.".format(name)}, 400
 
