@@ -61,6 +61,10 @@ class UserRegister(Resource):
     def post(self):
         data = UserRegister.parser.parse_args()
 
+        # prevent registering same username twice
+        if User.find_by_username(data['username']):
+            return {"message": "A user with that username already exists."}, 400
+
         connection = sqlite3.connect('data.db')
         cursor = connection.cursor()
 
@@ -70,4 +74,4 @@ class UserRegister(Resource):
         connection.commit()
         connection.close()
 
-        return {'message': 'User created successfully.'}, 201
+        return {"message": "User created successfully."}, 201
