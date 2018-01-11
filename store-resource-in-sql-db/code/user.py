@@ -1,4 +1,5 @@
 import sqlite3
+from flask_restful import Resource, reqparse
 
 class User:
     def __init__(self, _id, username, password):
@@ -41,3 +42,32 @@ class User:
         # no commit since we don't need to write into database
         connection.close()
         return user
+
+# create a new class for user to register into database
+class UserRegister(Resource):
+
+    parser = reqparse.RequestParser()
+    parser.add_argument('username',
+        type = str,
+        required = True,
+        help = "This field cannot be blank."
+    )
+    parser.add_argument('password',
+        type = str,
+        required = True,
+        help = "This field cannot be blank."
+    )
+
+    def post(self):
+        data = UserRegister.parser.parse_args()
+
+        connection = sqlite3.connect('data.db')
+        cursor = connect.cursor()
+
+        query = "INSERT INTO users VALUES (NULL, ?, ?)" # because we use system's id with automatic incremental, keep id as NULL
+        cursor.execute(query, (data['username'], data['password']))
+
+        connection.commit()
+        connection.close()
+
+        return {'message': 'User created successfully.'}, 201
