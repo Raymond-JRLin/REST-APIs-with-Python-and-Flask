@@ -66,7 +66,7 @@ class Item(Resource):
         # it may have problem to insert an item, so we use try to catch exception if it raised
         try:
             self.insert(item)
-        except:
+        except Exception as e:
             return {'message': "An error occurred inserting the item."}, 500 # 500: Internal Server Error, something went wrong but we can't tell you exactly what - something didn't go wrong with the request but the server messed up
 
         return item, 201
@@ -125,7 +125,7 @@ class Item(Resource):
         return updated_item # return the new one
 
     @classmethod
-    def insert(cls, item):
+    def update(cls, item):
         connection = sqlite3.connect('data.db')
         cursor = connection.cursor()
 
@@ -137,4 +137,18 @@ class Item(Resource):
 
 class ItemList(Resource):
     def get(self):
+        ### retrieve from database
+        # return {'items': items}
+        ###
+        connection = sqlite3.connect('data.db')
+        cursor = connection.cursor()
+
+        query = "SELECT * FROM items"
+        result = cursor.execute(query)
+
+        items =[]
+        for row in result:
+            items.append({'name': row[0], 'price': row[1]})
+
+        connection.close()
         return {'items': items}
