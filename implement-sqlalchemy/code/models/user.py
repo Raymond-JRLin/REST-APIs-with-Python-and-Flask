@@ -1,4 +1,10 @@
-class User:
+import sqlite3
+
+# we moved User class from user.py of resource package to here - user.py of model package, because it's not a resource, which means API cannot receive data into this class or send this class as a JSON representation. It's a helper essentially, which we use to store some data about the User and also a helper that contains a couple of methods to allow us to easily retrieve User objects from a database
+
+# model is our internal representation of an entity, whereas a resource is the external representation of an entity
+
+class UserModel:
     def __init__(self, _id, username, password):
         self.id = _id
         self.username = username

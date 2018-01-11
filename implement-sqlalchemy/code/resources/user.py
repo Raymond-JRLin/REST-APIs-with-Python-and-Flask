@@ -1,6 +1,6 @@
 import sqlite3
 from flask_restful import Resource, reqparse
-
+from models.user import UserModel
 
 # create a new class for user to register into database
 class UserRegister(Resource):
@@ -21,7 +21,7 @@ class UserRegister(Resource):
         data = UserRegister.parser.parse_args()
 
         # prevent registering same username twice
-        if User.find_by_username(data['username']):
+        if UserModel.find_by_username(data['username']):
             return {"message": "A user with that username already exists."}, 400
 
         connection = sqlite3.connect('data.db')
