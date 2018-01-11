@@ -27,8 +27,7 @@ select_query = "SELECT * FROM users"
 for row in cursor.execute(select_query):
     print(row)
 
-
-
+# save to disc
 connection.commit()
 
 connection.close() # close the connection to stop receiving command
