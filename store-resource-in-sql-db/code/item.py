@@ -52,7 +52,7 @@ class Item(Resource):
 
         # make sure the item is not already in database first
         if self.find_by_name(name):
-            return {'message': "An item with name '{}' already exists.".format(name)}, 400
+            return {'message': "An item with name '{}' already exists.".format(name)}, 400 # 400: when something did go wrong with the request
 
         data = Item.parser.parse_args()
 
@@ -62,6 +62,17 @@ class Item(Resource):
         # items.append(item) # add it into items list
         ###
 
+        # and make insertion as a single method outside of POST so we can also call insertion method in PUT
+        # it may have problem to insert an item, so we use try to catch exception if it raised
+        try:
+            self.insert(item)
+        except Exception as e:
+            return {'message': "An error ocurred inserting the item."}, 500 # 500: Internal Server Error, something went wrong but we can't tell you exactly what - something didn't go wrong with the request but the server messed up
+
+        return item, 201
+
+    @classmethod
+    def insert(cls, item):
         connection = sqlite3.connect('data.db')
         cursor = connection.cursor()
 
@@ -70,8 +81,6 @@ class Item(Resource):
 
         connection.commit()
         connection.close()
-
-        return item, 201
 
     def delete(self, name):
         ### with db
