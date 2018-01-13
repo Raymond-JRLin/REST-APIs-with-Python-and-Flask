@@ -6,6 +6,7 @@ from flask_jwt import JWT
 from security import authenticate, identity
 from resources.user import UserRegister
 from resources.item import Item, ItemList
+from resources.store import Store, StoreList
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False # in order to know when an object had changed but not been saved to database, the extension flask_sqlalchemy was tracking every change that we made to the SQLAlchemy session, and that took some resources. We turns off flask_sqlalchemy modification tracker but not turns off SQLAlchemy modification tracker because SQLAlchemy itself, the main library, has its own modification tracker, which is a bit better. Just change the extension behaviours
@@ -23,7 +24,9 @@ jwt = JWT(app, authenticate, identity) # JWT creates a new endpoint of /auth, in
 
 api.add_resource(Item, '/item/<string:name>') # http://127.0.0.1:5000/student/Rolf
 api.add_resource(ItemList, '/items')
+api.add_resource(StoreList, '/stores')
 api.add_resource(UserRegister, '/register') # added /register endpoint
+
 
 if __name__ == '__main__':
     # import here to prevent circular import when we import Item and User model
