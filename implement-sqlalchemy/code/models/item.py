@@ -1,4 +1,4 @@
-import sqlite3
+# import sqlite3 # we don't need sqlite3 any longer since we use SQLAlchemy
 import db import db
 
 class ItemModel(db.Model):
@@ -21,34 +21,52 @@ class ItemModel(db.Model):
     # keep this as class method since it will return a dictionary other than a model object
     @classmethod
     def find_by_name(cls, name):
-        connection = sqlite3.connect('data.db')
-        cursor = connection.cursor()
+        ### use SQLAlchemy
+        # connection = sqlite3.connect('data.db')
+        # cursor = connection.cursor()
+        #
+        # query = "SELECT * FROM items WHERE name = ?"
+        # result = cursor.execute(query, (name,))
+        # row = result.fetchone()
+        # connection.close()
+        #
+        # if row:
+        #     return cls(*row) # parse all elements in row to a item model
+        ###
 
-        query = "SELECT * FROM items WHERE name = ?"
-        result = cursor.execute(query, (name,))
-        row = result.fetchone()
-        connection.close()
-
-        if row:
-            return cls(*row) # parse all elements in row to a item model
+        # SQLAlchemy will transit a row to ItemModel if it can, .query is using a query builder
+        # return ItemModel.query.filter_by(name = name).first()
+        return cls.query.filter_by(name = name).first() # SELECT * FROM items WHERE name = name LIMIT 1
+        # return a item model object
 
     # modify following 2 methods as not class method since they can use item model object directly
-    def insert(self):
-        connection = sqlite3.connect('data.db')
-        cursor = connection.cursor()
+    def save_to_db(self):
+        ### use SQLAlchemy
+        # connection = sqlite3.connect('data.db')
+        # cursor = connection.cursor()
+        #
+        # query = "INSERT INTO items VALUES (?, ?)"
+        # cursor.execute(query, (self.name, self.price))
+        #
+        # connection.commit()
+        # connection.close()
+        ###
+        # save the model into database, SQLAlchemy can automatically translate model to row in a database, so we just tell it the object - self
+        db.session.add(self)
+        db.session.commit()
+        # it can update so we change this method to do insertion and updating, then we don't need another separate update method but we create another delete_from_db method for better use
 
-        query = "INSERT INTO items VALUES (?, ?)"
-        cursor.execute(query, (self.name, self.price))
-
-        connection.commit()
-        connection.close()
-
-    def update(self):
-        connection = sqlite3.connect('data.db')
-        cursor = connection.cursor()
-
-        query = "UPDATE items SET price = ? WHERE name = ?"
-        cursor.execute(query, (self.price, self.name)) # match the values in-order
-
-        connection.commit()
-        connection.close()
+    ### don't need
+    # def update(self):
+    #     connection = sqlite3.connect('data.db')
+    #     cursor = connection.cursor()
+    #
+    #     query = "UPDATE items SET price = ? WHERE name = ?"
+    #     cursor.execute(query, (self.price, self.name)) # match the values in-order
+    #
+    #     connection.commit()
+    #     connection.close()
+    ###
+        def delete_from_db(self):
+            db.session.delete(self)
+            db.session.commit()
