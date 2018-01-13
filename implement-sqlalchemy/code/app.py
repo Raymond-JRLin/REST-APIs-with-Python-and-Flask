@@ -9,6 +9,7 @@ from resources.item import Item, ItemList
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False # in order to know when an object had changed but not been saved to database, the extension flask_sqlalchemy was tracking every change that we made to the SQLAlchemy session, and that took some resources. We turns off flask_sqlalchemy modification tracker but not turns off SQLAlchemy modification tracker because SQLAlchemy itself, the main library, has its own modification tracker, which is a bit better. Just change the extension behaviours
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///data.db' # tell SQLAlchemy where to read our database. Also, it works if we cange sqlite: to MySQL/PostgreSQL
 app.secret_key = 'Raymond' # use a secret key and JWT, which stands for JSON Web Token, to encrypt message -> add security.py
 api = Api(app)
 
