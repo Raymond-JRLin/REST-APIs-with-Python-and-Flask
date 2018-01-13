@@ -13,6 +13,11 @@ class Item(Resource):
         required = True, #ensure no request can come throught with no price
         help = "This field cannot be left blank!"
     )
+    parser.add_argument('store_id',
+        type = int,
+        required = True, #ensure no request can come throught with no price
+        help = "Every item needs a store id."
+    )
 
     @jwt_required()
     # we have to authenticate before we can call the get method
@@ -30,7 +35,10 @@ class Item(Resource):
 
         data = Item.parser.parse_args()
 
-        item = ItemModel(name, data['price'])
+        # added store id
+        # item = ItemModel(name, data['price'], data['store_id'])
+        # or we can do
+        item = ItemModel(name, **data)
 
         try:
             item.save_to_db()
@@ -64,7 +72,6 @@ class Item(Resource):
         data = Item.parser.parse_args()
 
         item = ItemModel.find_by_name(name)
-        updated_item = ItemModel(name, data['price'])
 
         if item is None:
             ### use SQLAlchemy
@@ -73,7 +80,11 @@ class Item(Resource):
             # except Exception as e:
             #     return {"message": "An error occurred inserting the item."}, 500
             ###
-            item = ItemModel(name, data['price'])
+
+            # added store id
+            # item = ItemModel(name, data['price'], data['store_id'])
+            # or we can do
+            item = ItemModel(name, **data)
         else:
             ### use SQLAlchemy
             # try:
