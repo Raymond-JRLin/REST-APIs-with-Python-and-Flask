@@ -25,7 +25,7 @@ class Item(Resource):
 
     def post(self, name):
         # make sure the item is not already in database first
-        if find_by_name(name):
+        if ItemModel.find_by_name(name):
             return {'message': "An item with name '{}' already exists.".format(name)}, 400 # 400: when something did go wrong with the request
 
         data = Item.parser.parse_args()
@@ -53,11 +53,11 @@ class Item(Resource):
         # return {'message': 'Item deleted'}
         ###
 
-        item = Item.find_by_name(name)
+        item = ItemModel.find_by_name(name)
 
         if item:
             item.delete_from_db()
-            
+
         return {'message': 'Item deleted'}
 
     def put(self, name):

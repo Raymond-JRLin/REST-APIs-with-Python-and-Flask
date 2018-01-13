@@ -1,5 +1,5 @@
 # import sqlite3 # we don't need sqlite3 any longer since we use SQLAlchemy
-import db import db
+from db import db
 
 class ItemModel(db.Model):
     # specify table name and columns
@@ -7,7 +7,7 @@ class ItemModel(db.Model):
 
     id = db.Column(db.Integer, primary_key = True)
     name = db.Column(db.String(80)) # 80 character maximum to limit the size
-    price = db.Column(db.FLoat(precision = 2)) # 2 numbers after the decimal point
+    price = db.Column(db.Float(precision = 2)) # 2 numbers after the decimal point
 
     def __init__(self, name, price):
         self.name = name
@@ -67,6 +67,6 @@ class ItemModel(db.Model):
     #     connection.commit()
     #     connection.close()
     ###
-        def delete_from_db(self):
-            db.session.delete(self)
-            db.session.commit()
+    def delete_from_db(self):
+        db.session.delete(self)
+        db.session.commit()
