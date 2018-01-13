@@ -13,6 +13,11 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///data.db' # tell SQLAlchemy wh
 app.secret_key = 'Raymond' # use a secret key and JWT, which stands for JSON Web Token, to encrypt message -> add security.py
 api = Api(app)
 
+@app.before_first_request
+# it will run following creating before any request unless there's a table existing
+def create_tables():
+    db.create_all()
+
 jwt = JWT(app, authenticate, identity) # JWT creates a new endpoint of /auth, including a user name and password, then JWT sent them to authenticate function to compare, and returns a JW token. JWT itself can do nothing, but send to identity function
 
 
