@@ -9,6 +9,9 @@ class ItemModel(db.Model):
     name = db.Column(db.String(80)) # 80 character maximum to limit the size
     price = db.Column(db.Float(precision = 2)) # 2 numbers after the decimal point
 
+    store_id = db.Column(db.Integer, db.ForeignKey('stores.id')) # add a store id to link the items and its belonging store
+    store = db.relationship('StoreModel') # how SQLAlchemy does join
+
     def __init__(self, name, price):
         self.name = name
         self.price = price
