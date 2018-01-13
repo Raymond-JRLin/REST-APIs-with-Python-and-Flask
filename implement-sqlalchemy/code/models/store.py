@@ -7,11 +7,14 @@ class StoreModel(db.Model):
     id = db.Column(db.Integer, primary_key = True)
     name = db.Column(db.String(80)) # 80 character maximum to limit the size
 
+    # back reference: look items to see which items are in this store
+    items = db.relationship('ItemModel')
+
     def __init__(self, name):
         self.name = name
 
     def json(self):
-        return {'name': self.name, 'items': self.items}
+        return {'name': self.name, 'items': [item.json() for item in self.items]}
 
     # keep this as class method since it will return a dictionary other than a model object
     @classmethod
