@@ -108,5 +108,8 @@ api.add_resource(ItemList, '/items')
 api.add_resource(UserRegister, '/register') # added /register endpoint
 
 if __name__ == '__main__':
+    # import here to prevent circular import when we import Item and User model
+    from db import db
+    db.init_app(app)
     # prevent running this app.py when we just import it
     app.run(port = 5000, debug = True) # Flask is nice to show the error message

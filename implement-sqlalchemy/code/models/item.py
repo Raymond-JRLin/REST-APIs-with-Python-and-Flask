@@ -1,6 +1,7 @@
 import sqlite3
+import db import db
 
-class ItemModel:
+class ItemModel(db.Model):
     def __init__(self, name, price):
         self.name = name
         self.price = price
@@ -22,7 +23,7 @@ class ItemModel:
         connection.close()
 
         if row:
-            return cls(*row) # parse all elements in row to a item model 
+            return cls(*row) # parse all elements in row to a item model
 
     # modify following 2 methods as not class method since they can use item model object directly
     def insert(self):
