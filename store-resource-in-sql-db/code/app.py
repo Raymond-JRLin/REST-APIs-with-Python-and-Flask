@@ -107,4 +107,6 @@ api.add_resource(Item, '/item/<string:name>') # http://127.0.0.1:5000/student/Ro
 api.add_resource(ItemList, '/items')
 api.add_resource(UserRegister, '/register') # added /register endpoint
 
-app.run(port = 5000, debug = True) # Flask is nice to show the error message
+if __name__ == '__main__':
+    # prevent running this app.py when we just import it
+    app.run(port = 5000, debug = True) # Flask is nice to show the error message

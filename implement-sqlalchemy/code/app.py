@@ -4,8 +4,8 @@ from flask_restful import Api
 from flask_jwt import JWT
 
 from security import authenticate, identity
-from resource.user import UserRegister
-from resource.item import Item, ItemList
+from resources.user import UserRegister
+from resources.item import Item, ItemList
 
 app = Flask(__name__)
 app.secret_key = 'Raymond' # use a secret key and JWT, which stands for JSON Web Token, to encrypt message -> add security.py
@@ -107,4 +107,6 @@ api.add_resource(Item, '/item/<string:name>') # http://127.0.0.1:5000/student/Ro
 api.add_resource(ItemList, '/items')
 api.add_resource(UserRegister, '/register') # added /register endpoint
 
-app.run(port = 5000, debug = True) # Flask is nice to show the error message
+if __name__ == '__main__':
+    # prevent running this app.py when we just import it
+    app.run(port = 5000, debug = True) # Flask is nice to show the error message
