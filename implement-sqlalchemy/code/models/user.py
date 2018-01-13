@@ -1,11 +1,18 @@
 import sqlite3
-from db import db 
+from db import db
 
 # we moved User class from user.py of resource package to here - user.py of model package, because it's not a resource, which means API cannot receive data into this class or send this class as a JSON representation. It's a helper essentially, which we use to store some data about the User and also a helper that contains a couple of methods to allow us to easily retrieve User objects from a database
 
 # model is our internal representation of an entity, whereas a resource is the external representation of an entity
 
 class UserModel(db.Model):
+    __tablename__ = 'users'
+
+    # tell SQLAlchemy 3 columns the model is going to have, when we do saving, only going to look for these 3 properties even though there's something else in __init__ and it won't be save into database
+    id = db.Column(db.Integer, primary_key = True)
+    username = db.Column(db.String(80)) # 80 character maximum to limit the size
+    password = db.Column(db.String(80))
+
     def __init__(self, _id, username, password):
         self.id = _id
         self.username = username
