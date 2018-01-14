@@ -17,11 +17,11 @@ api = Api(app)
 @app.before_first_request
 # it will run following creating before any request unless there's a table existing
 def create_tables():
-    db.create_all()
+    db.create_all() # it only create what it sees, so it's very important to import store and StoreList
 
 jwt = JWT(app, authenticate, identity) # JWT creates a new endpoint of /auth, including a user name and password, then JWT sent them to authenticate function to compare, and returns a JW token. JWT itself can do nothing, but send to identity function
 
-
+api.add_resource(Store, '/store/<string:name>')
 api.add_resource(Item, '/item/<string:name>') # http://127.0.0.1:5000/student/Rolf
 api.add_resource(ItemList, '/items')
 api.add_resource(StoreList, '/stores')
