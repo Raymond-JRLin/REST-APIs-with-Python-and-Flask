@@ -14,10 +14,12 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///data.db' # tell SQLAlchemy wh
 app.secret_key = 'Raymond' # use a secret key and JWT, which stands for JSON Web Token, to encrypt message -> add security.py
 api = Api(app)
 
-@app.before_first_request
-# it will run following creating before any request unless there's a table existing
-def create_tables():
-    db.create_all() # it only create what it sees, so it's very important to import store and StoreList
+### since we deploy in Heroku, we would not run this app.py because we run through UWSGI, so there's no db imported then cause a error - cannot run db.create_all(). We cannot import db outside of if structure otherwise we would get circular import, so move it to run.oy
+# @app.before_first_request
+# # it will run following creating before any request unless there's a table existing
+# def create_tables():
+#     db.create_all() # it only create what it sees, so it's very important to import store and StoreList
+###
 
 jwt = JWT(app, authenticate, identity) # JWT creates a new endpoint of /auth, including a user name and password, then JWT sent them to authenticate function to compare, and returns a JW token. JWT itself can do nothing, but send to identity function
 
