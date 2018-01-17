@@ -1,3 +1,5 @@
+import os
+
 from flask import Flask
 from flask_restful import Api
 # resource is a thing can be created and changed by API
@@ -10,7 +12,8 @@ from resources.store import Store, StoreList
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False # in order to know when an object had changed but not been saved to database, the extension flask_sqlalchemy was tracking every change that we made to the SQLAlchemy session, and that took some resources. We turns off flask_sqlalchemy modification tracker but not turns off SQLAlchemy modification tracker because SQLAlchemy itself, the main library, has its own modification tracker, which is a bit better. Just change the extension behaviours
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///data.db' # tell SQLAlchemy where to read our database. Also, it works if we cange sqlite: to MySQL/PostgreSQL
+# deploy in Heroku and use PostgreSQL to store data, so in Heroku we use the OS environment variable, but keep sqlite as second choice when we test locally
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'sqlite:///data.db') # tell SQLAlchemy where to read our database. Also, it works if we cange sqlite: to MySQL/PostgreSQL
 app.secret_key = 'Raymond' # use a secret key and JWT, which stands for JSON Web Token, to encrypt message -> add security.py
 api = Api(app)
 
